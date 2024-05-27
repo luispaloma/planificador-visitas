@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Ensayos Clínicos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="date"],
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Ensayos Clínicos</h1>
+        <div class="form-group">
+            <label for="start-date">Fecha de Inicio:</label>
+            <input type="date" id="start-date">
+        </div>
+        <button onclick="calculateDates()">Calcular Fechas</button>
+        
+        <div class="result" id="result-dates"></div>
+        
+        <h2>Calculadora de Diferencia entre Fechas</h2>
+        <div class="form-group">
+            <label for="date1">Fecha 1:</label>
+            <input type="date" id="date1">
+        </div>
+        <div class="form-group">
+            <label for="date2">Fecha 2:</label>
+            <input type="date" id="date2">
+        </div>
+        <button onclick="calculateDifference()">Calcular Diferencia</button>
+        
+        <div class="result" id="result-difference"></div>
+    </div>
+
+    <script>
+        function calculateDates() {
+            const startDate = new Date(document.getElementById('start-date').value);
+            if (!startDate) {
+                alert("Por favor, selecciona una fecha de inicio.");
+                return;
+            }
+            
+            const weeksToMilliseconds = weeks => weeks * 7 * 24 * 60 * 60 * 1000;
+            const dates = [
+                { weeks: 16, label: "16 semanas" },
+                { weeks: 24, label: "24 semanas" },
+                { weeks: 56, label: "56 semanas" }
+            ];
+            
+            let resultHTML = '<h3>Fechas de Seguimiento:</h3><ul>';
+            dates.forEach(date => {
+                const followUpDate = new Date(startDate.getTime() + weeksToMilliseconds(date.weeks));
+                resultHTML += `<li>${date.label}: ${followUpDate.toLocaleDateString()}</li>`;
+            });
+            resultHTML += '</ul>';
+            
+            document.getElementById('result-dates').innerHTML = resultHTML;
+        }
+
+        function calculateDifference() {
+            const date1 = new Date(document.getElementById('date1').value);
+            const date2 = new Date(document.getElementById('date2').value);
+            if (!date1 || !date2) {
+                alert("Por favor, selecciona ambas fechas.");
+                return;
+            }
+            
+            const differenceInMilliseconds = Math.abs(date2 - date1);
+            const differenceInDays = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+            const differenceInWeeks = differenceInDays / 7;
+            
+            document.getElementById('result-difference').innerHTML = 
+                `<h3>Diferencia entre Fechas:</h3>
+                <p>${differenceInWeeks.toFixed(2)} semanas</p>
+                <p>${differenceInDays} días</p>`;
+        }
+    </script>
+</body>
+</html>
